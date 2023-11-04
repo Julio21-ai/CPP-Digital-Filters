@@ -20,7 +20,7 @@
 #define DIGITALFILTERS_MODULE_LIB 
 #endif
 
-struct DIGITALFILTERS_MODULE_LIB filterCoefficients
+struct DIGITALFILTERS_MODULE_LIB BicuadCoefficients
 {
 	double a0, a1, a2, b1, b2;
 };
@@ -36,35 +36,35 @@ struct DIGITALFILTERS_MODULE_LIB filterCoefficients
 DIGITALFILTERS_MODULE_LIB
 void dBEvalFilter(double freq
 	, double sampleRate
-	, const filterCoefficients& Coef
+	, const BicuadCoefficients& Coef
 	, double& magnitude_dB
 	, double& phase);
 
 DIGITALFILTERS_MODULE_LIB
 void dBEvalFilterComplex(double freq
 	, double sampleRate
-	, const filterCoefficients& Coef
+	, const BicuadCoefficients& Coef
 	, double& magnitude_dB
 	, double& phase);
 
 DIGITALFILTERS_MODULE_LIB
 double EvalFreqResponseDB(double freq
 	, double sampleRate
-	, const filterCoefficients& Coef);
+	, const BicuadCoefficients& Coef);
 DIGITALFILTERS_MODULE_LIB
 double EvalFreqResponseDbComplex(double freq
 	, double sampleRate
-	, const filterCoefficients& Coef);
+	, const BicuadCoefficients& Coef);
 
 DIGITALFILTERS_MODULE_LIB
 void EvalBicuad(double w
-	, const filterCoefficients& Coef
+	, const BicuadCoefficients& Coef
 	, double& magnitude
 	, double& phase);
 
 DIGITALFILTERS_MODULE_LIB
 void EvalBicuadComplex(double w
-	, const filterCoefficients& Coef
+	, const BicuadCoefficients& Coef
 	, double& magnitude
 	, double& phase);
 
@@ -87,74 +87,74 @@ void bandpassCoefficients(double peakGain
 	, double Fc
 	, double Q
 	, double Fs
-	, filterCoefficients& coef);
+	, BicuadCoefficients& coef);
 
 DIGITALFILTERS_MODULE_LIB
 void highpassCoefficients(double peakGain
 	, double Fc
 	, double Q
 	, double Fs
-	, filterCoefficients& coef);
+	, BicuadCoefficients& coef);
 
 DIGITALFILTERS_MODULE_LIB
 void highShelfCoefficients(double peakGain
 	, double Fc
 	, double Fs
-	, filterCoefficients& coef);
+	, BicuadCoefficients& coef);
 
 DIGITALFILTERS_MODULE_LIB
 void highShelfCoefficients(double peakGain
 	, double Fc
 	, double Q
 	, double Fs
-	, filterCoefficients& coef);
+	, BicuadCoefficients& coef);
 
 DIGITALFILTERS_MODULE_LIB
 void lowpassCoefficients(double peakGain
 	, double Fc
 	, double Q
 	, double Fs
-	, filterCoefficients& coef);
+	, BicuadCoefficients& coef);
 
 DIGITALFILTERS_MODULE_LIB
 void lowShelfCoefficients(double peakGain
 	, double Fc
 	, double Q
 	, double Fs
-	, filterCoefficients& coef);
+	, BicuadCoefficients& coef);
 
 DIGITALFILTERS_MODULE_LIB
 void lowShelfCoefficients(double peakGain
 	, double Fc
 	, double Fs
-	, filterCoefficients& coef);
+	, BicuadCoefficients& coef);
 
 DIGITALFILTERS_MODULE_LIB
 void notchCoefficients(double peakGain
 	, double Fc
 	, double Q
 	, double Fs
-	, filterCoefficients& coef);
+	, BicuadCoefficients& coef);
 
 
 DIGITALFILTERS_MODULE_LIB
 void onepole_lpCoefficients(double peakGain
 	, double Fc
 	, double Fs
-	, filterCoefficients& coef);
+	, BicuadCoefficients& coef);
 
 DIGITALFILTERS_MODULE_LIB
 void ononepole_hpCoefficients(double peakGain
 	, double Fc
 	, double Fs
-	, filterCoefficients& coef);
+	, BicuadCoefficients& coef);
 
 DIGITALFILTERS_MODULE_LIB
 void peakCoefficients(double peakGain
 	, double Fc
 	, double Q
 	, double Fs
-	, filterCoefficients& coef);
+	, BicuadCoefficients& coef);
 
 /*
 ******************************************************************************

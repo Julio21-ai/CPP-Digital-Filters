@@ -58,7 +58,7 @@ __forceinline double To_w(double freq, double sampleRate)
 
 void dBEvalFilter(double freq
 	, double sampleRate
-	, const filterCoefficients& Coef
+	, const BicuadCoefficients& Coef
 	, double& magnitude_db
 	, double& phase)
 {
@@ -69,7 +69,7 @@ void dBEvalFilter(double freq
 
 void dBEvalFilterComplex(double freq
 	, double sampleRate
-	, const filterCoefficients& Coef
+	, const BicuadCoefficients& Coef
 	, double& magnitude_dB
 	, double& phase)
 {
@@ -80,7 +80,7 @@ void dBEvalFilterComplex(double freq
 
 double EvalFreqResponseDB(double freq
 	, double sampleRate
-	, const filterCoefficients& Coef)
+	, const BicuadCoefficients& Coef)
 {
 
 	double magnitude;//gain in Au
@@ -93,7 +93,7 @@ double EvalFreqResponseDB(double freq
 
 double EvalFreqResponseDbComplex(double freq
 	, double sampleRate
-	, const filterCoefficients& Coef)
+	, const BicuadCoefficients& Coef)
 {
 	double magnitude;//gain in Au
 	double phase;
@@ -109,7 +109,7 @@ double EvalFreqResponseDbComplex(double freq
 */
 
 void EvalBicuad(double w
-	, const filterCoefficients& Coef
+	, const BicuadCoefficients& Coef
 	, double& magnitude
 	, double& phase)
 {
@@ -138,7 +138,7 @@ void EvalBicuad(double w
 
 
 void EvalBicuadComplex(double w
-	, const filterCoefficients& Coef
+	, const BicuadCoefficients& Coef
 	, double& magnitude
 	, double& phase)
 {
@@ -193,7 +193,7 @@ void FilterDirectEval(double w
 void onepole_lpCoefficients(double peakGain
 	, double Fc
 	, double Fs
-	, filterCoefficients& coef)
+	, BicuadCoefficients& coef)
 {
 
 	double V = pow(10, fabs(peakGain) / 20);
@@ -209,7 +209,7 @@ void onepole_lpCoefficients(double peakGain
 void ononepole_hpCoefficients(double peakGain
 	, double Fc
 	, double Fs
-	, filterCoefficients& coef)
+	, BicuadCoefficients& coef)
 {
 	double V = pow(10, fabs(peakGain) / 20);
 	double K = tan(M_PI * Fc / Fs);
@@ -225,7 +225,7 @@ void lowpassCoefficients(double peakGain
 	, double Fc
 	, double Q
 	, double Fs
-	, filterCoefficients& coef)
+	, BicuadCoefficients& coef)
 {
 	double V = pow(10, fabs(peakGain) / 20);
 	double K = tan(M_PI * Fc / Fs);
@@ -243,7 +243,7 @@ void highpassCoefficients(double peakGain
 	, double Fc
 	, double Q
 	, double Fs
-	, filterCoefficients& coef)
+	, BicuadCoefficients& coef)
 {
 	double norm;
 	double V = pow(10, fabs(peakGain) / 20);
@@ -262,7 +262,7 @@ void bandpassCoefficients(double peakGain
 	, double Fc
 	, double Q
 	, double Fs
-	, filterCoefficients& coef)
+	, BicuadCoefficients& coef)
 {
 
 	double K = tan(M_PI * Fc / Fs);
@@ -279,7 +279,7 @@ void notchCoefficients(double peakGain
 	, double Fc
 	, double Q
 	, double Fs
-	, filterCoefficients& coef)
+	, BicuadCoefficients& coef)
 {
 	double norm;
 	double K = tan(M_PI * Fc / Fs);
@@ -296,7 +296,7 @@ void peakCoefficients(double peakGain
 	, double Fc
 	, double Q
 	, double Fs
-	, filterCoefficients& coef)
+	, BicuadCoefficients& coef)
 {
 	double norm;
 	double V = pow(10, fabs(peakGain) / 20);
@@ -327,7 +327,7 @@ void peakCoefficients(double peakGain
 void highShelfCoefficients(double peakGain
 	, double Fc
 	, double Fs
-	, filterCoefficients& coef)
+	, BicuadCoefficients& coef)
 {
 	double norm;
 	double V = pow(10, fabs(peakGain) / 20);
@@ -358,7 +358,7 @@ void highShelfCoefficients(double peakGain
 	, double Fc
 	, double Q
 	, double Fs
-	, filterCoefficients& coef)
+	, BicuadCoefficients& coef)
 {
 	double norm;
 	double V = pow(10, fabs(peakGain) / 20);
@@ -389,7 +389,7 @@ void highShelfCoefficients(double peakGain
 void lowShelfCoefficients(double peakGain
 	, double Fc
 	, double Fs
-	, filterCoefficients& coef)
+	, BicuadCoefficients& coef)
 {
 	double norm;
 	double V = pow(10, fabs(peakGain) / 20);
@@ -419,7 +419,7 @@ void lowShelfCoefficients(double peakGain
 	, double Fc
 	, double Q
 	, double Fs
-	, filterCoefficients& coef)
+	, BicuadCoefficients& coef)
 {
 	double norm;
 	double V = pow(10, fabs(peakGain) / 20);
