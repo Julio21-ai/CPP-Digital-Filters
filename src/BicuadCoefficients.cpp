@@ -218,6 +218,26 @@ BicuadCoefficients BicuadCoefficients::LowPass(double Fc
 }
 #pragma endregion
 
+#pragma region LowPass12dbOct
+	BicuadCoefficients BicuadCoefficients::LowPass12dbOct(double Fc
+	, double Fs
+)
+{
+	BicuadCoefficients coef;
+
+	double K = tan(double(MathConstants::pi) * Fc / Fs);
+	double norm;
+	//M_SQRT1_2
+	norm = 1 / (1 + K / double(MathConstants::m_1_Sqrt2) + K * K);
+	coef.a0 = K * K * norm;
+	coef.a1 = 2 * coef.a0;
+	coef.a2 = coef.a0;
+	coef.b1 = 2 * (K * K - 1) * norm;
+	coef.b2 = (1 - K / double(MathConstants::m_1_Sqrt2) + K * K) * norm;
+	return coef;
+}
+#pragma endregion
+
 #pragma region HighPass
 BicuadCoefficients BicuadCoefficients::HighPass( double Fc
 	, double Q
@@ -237,6 +257,25 @@ BicuadCoefficients BicuadCoefficients::HighPass( double Fc
 	coef.b2 = (1 - K / Q + K * K) * norm;
 	return coef;
 }
+#pragma endregion
+
+#pragma region HighPass12dbOct
+BicuadCoefficients BicuadCoefficients::HighPass12dbOct(double Fc, double Fs)
+{
+	BicuadCoefficients coef;
+	double norm;
+
+	double K = tan(double(MathConstants::pi) * Fc / Fs);
+
+	norm = 1 / (1 + K / double(MathConstants::m_1_Sqrt2) + K * K);
+	coef.a0 = 1 * norm;
+	coef.a1 = -2 * coef.a0;
+	coef.a2 = coef.a0;
+	coef.b1 = 2 * (K * K - 1) * norm;
+	coef.b2 = (1 - K / double(MathConstants::m_1_Sqrt2) + K * K) * norm;
+	return coef;
+}
+
 #pragma endregion
 
 #pragma region BandPass
@@ -408,7 +447,6 @@ BicuadCoefficients BicuadCoefficients::LowShelf(double peakGain
 		coef.b2 = (1 - sqrt(2 * V) * K + V * K * K) * norm;
 	}
 
-
 	return coef;
 
 }
@@ -447,6 +485,73 @@ BicuadCoefficients BicuadCoefficients::LowShelfQ(double peakGain
 
 	return coef;
 
+}
+#pragma endregion
+
+#pragma region ButterworthResponceQfactors()
+std::vector<double> BicuadCoefficients::ButterworthResponceQfactors(int fiterOrder)
+{
+	int pairs = fiterOrder >> 1;
+	int oddPoles = fiterOrder & 1;
+	double poleInc = double(DigitalFilters::MathConstants::pi) / fiterOrder;
+
+	std::vector<double> qVals;
+	double firstAngle = poleInc;
+
+	if(!oddPoles)
+	{
+		firstAngle /= 2;
+	}
+	else
+	{
+		qVals.push_back(0.5);
+	}
+
+	for(int idx = 0; idx < pairs; idx++)
+	{
+		double qVal = 1.0 / (2.0 * cos(firstAngle + idx * poleInc));
+		qVals.push_back(qVal);
+	}
+
+	return qVals;
+
+}
+
+#pragma endregion
+
+#pragma region LowPassCascadeAsButterworth()
+std::vector<BicuadCoefficients> BicuadCoefficients::LowPassCascadeAsButterworth(
+	int order, double Fc, double Fs)
+{
+	std::vector<BicuadCoefficients> coefficients;
+
+	std::vector<double> qfactors= 
+		BicuadCoefficients::ButterworthResponceQfactors(order);
+
+	for(std::vector<double>::iterator iter; iter != qfactors.end() ; iter++)
+	{
+		coefficients.push_back( LowPass(Fc,*iter,Fs));
+	}
+	
+	return std::vector<BicuadCoefficients>();
+}
+#pragma endregion
+
+#pragma region HighPassCascadeAsButterworth()
+std::vector<BicuadCoefficients> BicuadCoefficients::HighPassCascadeAsButterworth(
+	int order, double Fc, double Fs)
+{
+	std::vector<BicuadCoefficients> coefficients;
+
+	std::vector<double> qfactors =
+		BicuadCoefficients::ButterworthResponceQfactors(order);
+
+	for(std::vector<double>::iterator iter; iter != qfactors.end(); iter++)
+	{
+		coefficients.push_back(HighPass(Fc, *iter, Fs));
+	}
+
+	return std::vector<BicuadCoefficients>();
 }
 #pragma endregion
 

@@ -1,10 +1,5 @@
 #include "IIRfreqResponse.h"
 #include "FilterEvaluator.h"
-
-//#if defined(__INTEL_COMPILER) || defined(__INTEL_LLVM_COMPILER)
-//#include <mathimf.h>
-//#endif
-
 #include <omp.h>
 
 using namespace DigitalFilters;

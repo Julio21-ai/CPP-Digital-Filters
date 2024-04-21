@@ -9,8 +9,7 @@
 
 using namespace DigitalFilters;
 
-long  double Epsilon = /*8e-15l*/ 8.8817841970012523e-15;
-
+long  double Epsilon = 8.8817841970012523e-15;
 
 typedef union
 {
@@ -31,10 +30,7 @@ typedef union
   double absErr(double x, double y)
   {
      return abs( x-y) / x;
-  
-
   }
-
 
 
   std::vector<double> generateRandomFloats(int count) 
@@ -57,13 +53,10 @@ typedef union
 
   std::vector<double> randomSet = generateRandomFloats(44800000);
 
-
 TEST(TestCaseName, TestName) {
   EXPECT_EQ(1, 1);
   EXPECT_TRUE(true);
 }
-
-
 
 TEST(DigitalFiltersTEST, TEST_LowShelf1stOrder)
 {
@@ -296,7 +289,6 @@ TEST(DigitalFiltersTEST, TEST_Notch)
 
 }
 
-
 TEST(DigitalFiltersTEST, TEST_OnePoleHighPass)
 {
     using namespace DigitalFilters;
@@ -319,8 +311,6 @@ TEST(DigitalFiltersTEST, TEST_OnePoleHighPass)
 }
 
 
-
-
 TEST(DigitalFiltersTEST, Test_OnePoleLowPass)
 {
     using namespace DigitalFilters;
@@ -328,7 +318,6 @@ TEST(DigitalFiltersTEST, Test_OnePoleLowPass)
     BicuadCoefficients bicuads;
 
     bicuads = BicuadCoefficients::OnePoleLowPass(100, 1000);
-
 
     ASSERT_NEAR(bicuads.getA0(), 0.4665119089088967, Epsilon);
 
@@ -536,9 +525,6 @@ TEST(DigitalFiltersTEST, Test_EvalBicuadTrig)
 
 }
 
-
-
-
 //// Define a test case
 TEST(DigitalFiltersTEST, Test_FrequencyResponseTrig)
 {
@@ -654,20 +640,25 @@ TEST(DigitalFiltersTEST, TEST_Parallel)
 
   bicuads = BicuadCoefficients::PeakEq(5, 100, 10, 1000);
  
-  // Captura el tiempo de inicio
+
   auto start = std::chrono::high_resolution_clock::now();
 
-  // Llama a la función cuyo tiempo de ejecución deseas medir
-  auto res = IIRfreqResponse::FrequencyResponse(bicuads.GetZeros(), bicuads.GetPoles(), randomSet, 1000);
 
-  // Captura el tiempo de finalización
+  auto res = IIRfreqResponse::FrequencyResponse(bicuads.GetZeros(),
+    bicuads.GetPoles(),
+    randomSet, 
+    1000);
+
+
   auto end = std::chrono::high_resolution_clock::now();
 
-  // Calcula la duración total
-  auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 
-  // Imprime el tiempo de ejecución en microsegundos
-  std::cout << "Tiempo de ejecucion: " << duration.count()/1000 << " milisegundos" << std::endl;
+  auto duration = 
+    std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+
+
+  std::cout << "Exec Time: " << duration.count()/1000 
+    << " miliseconds" << std::endl;
 
   EXPECT_EQ(1, 1);
   EXPECT_TRUE(true);
