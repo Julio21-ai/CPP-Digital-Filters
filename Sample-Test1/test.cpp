@@ -6,6 +6,8 @@
 #include <random>
 #include <chrono>
 #include "..\include\IIRfreqResponse.h"
+#include "..\include\IIRFilters.h"
+#include "../include/FilterUtils.h"
 
 using namespace DigitalFilters;
 
@@ -33,7 +35,7 @@ typedef union
   }
 
 
-  std::vector<double> generateRandomFloats(int count) 
+  std::vector<double> generateRandomFloats(int count)
   {
     std::vector<double> randomFloats;
 
@@ -64,7 +66,7 @@ TEST(DigitalFiltersTEST, TEST_LowShelf1stOrder)
 
     BicuadCoefficients bicuads;
 
-    bicuads = BicuadCoefficients::LowShelf1stOrder(5, 100, 1000);
+    bicuads = IIRFilters::LowShelf1stOrder(5, 100, 1000);
 
     ASSERT_NEAR(bicuads.getA0(), 1.1908631219032908, Epsilon);
     ASSERT_NEAR(bicuads.getA1(), -0.31866232759113794, Epsilon);
@@ -81,7 +83,7 @@ TEST(DigitalFiltersTEST, TEST_HighShelf1stOrder)
 
     BicuadCoefficients bicuads;
 
-    bicuads = BicuadCoefficients::HighShelf1stOrder(5, 100, 1000);
+    bicuads = IIRFilters::HighShelf1stOrder(5, 100, 1000);
 
     ASSERT_NEAR(bicuads.getA0(), 1.587416288135632,Epsilon);
     ASSERT_NEAR(bicuads.getA1(), -1.0969417376300605, Epsilon);
@@ -98,7 +100,7 @@ TEST(DigitalFiltersTEST, TEST_HighPass1stOrder)
 
     BicuadCoefficients bicuads;
 
-    bicuads = BicuadCoefficients::HighPass1stOrder(100, 1000);
+    bicuads = IIRFilters::HighPass1stOrder(100, 1000);
 
     ASSERT_NEAR(bicuads.getA0(), 0.7547627247472144, Epsilon);
     ASSERT_NEAR(bicuads.getA1(), -0.7547627247472144, Epsilon);
@@ -115,7 +117,7 @@ TEST(DigitalFiltersTEST, TEST_LowPass1stOrder)
 
     BicuadCoefficients bicuads;
 
-    bicuads = BicuadCoefficients::LowPass1stOrder( 100, 1000);
+    bicuads = IIRFilters::LowPass1stOrder( 100, 1000);
 
     ASSERT_NEAR(bicuads.getA0(), 0.24523727525278555, Epsilon);
     ASSERT_NEAR(bicuads.getA1(), 0.24523727525278555, Epsilon);
@@ -132,7 +134,7 @@ TEST(DigitalFiltersTEST, TEST_AllPass)
 
     BicuadCoefficients bicuads;
 
-    bicuads = BicuadCoefficients::AllPass1stOrder( 100, 1000);
+    bicuads = IIRFilters::AllPass1stOrder( 100, 1000);
 
     ASSERT_NEAR(bicuads.getA0(), 0.5095254494944288, Epsilon);
     ASSERT_NEAR(bicuads.getA1(), -1, Epsilon);
@@ -150,12 +152,12 @@ TEST(DigitalFiltersTEST, TEST_AllPassQ)
 
     BicuadCoefficients bicuads;
 
-    bicuads = BicuadCoefficients::AllPassQ(100, 10, 1000);
+    bicuads = IIRFilters::AllPassQ(100, 10, 1000);
 
     ASSERT_NEAR(bicuads.getA0(), 0.9428996130385592 , Epsilon);
     ASSERT_NEAR(bicuads.getA1(), -1.5718388053127037, Epsilon);
     ASSERT_NEAR(bicuads.getA2(), 1                  , Epsilon);
-                                 
+
     ASSERT_NEAR(bicuads.getB1(), -1.5718388053127037, Epsilon);
     ASSERT_NEAR(bicuads.getB2(), 0.9428996130385592, Epsilon);
 
@@ -169,7 +171,7 @@ TEST(DigitalFiltersTEST, TEST_BandPass)
 
     BicuadCoefficients bicuads;
 
-    bicuads = BicuadCoefficients::BandPass(100, 10, 1000);
+    bicuads = IIRFilters::BandPass(100, 10, 1000);
 
     ASSERT_NEAR(bicuads.getA0(), 0.028550193480720448, Epsilon);
     ASSERT_NEAR(bicuads.getA1(), 0, Epsilon);
@@ -188,7 +190,7 @@ TEST(DigitalFiltersTEST, TEST_HighPass)
 
     BicuadCoefficients bicuads;
 
-    bicuads = BicuadCoefficients::HighPass( 100,10 , 1000);
+    bicuads = IIRFilters::HighPass( 100,10 , 1000);
 
     ASSERT_NEAR(bicuads.getA0(), 0.8786846045878157, Epsilon);
     ASSERT_NEAR(bicuads.getA1(), -1.7573692091756314, Epsilon);
@@ -206,7 +208,7 @@ TEST(DigitalFiltersTEST, TEST_HighShelf)
 
     BicuadCoefficients bicuads;
 
-    bicuads = BicuadCoefficients::HighShelf(5, 100,  1000);
+    bicuads = IIRFilters::HighShelf(5, 100,  1000);
 
     ASSERT_NEAR(bicuads.getA0(), 1.595199772351261, Epsilon);
     ASSERT_NEAR(bicuads.getA1(), -2.1375367952754485, Epsilon);
@@ -224,7 +226,7 @@ TEST(DigitalFiltersTEST, TEST_HighShelfQ)
 
     BicuadCoefficients bicuads;
 
-    bicuads = BicuadCoefficients::HighShelfQ(5, 100, 1 / sqrt(2), 1000);
+    bicuads = IIRFilters::HighShelfQ(5, 100, 1 / sqrt(2), 1000);
 
     ASSERT_NEAR(bicuads.getA0(), 1.595199772351261, Epsilon);
     ASSERT_NEAR(bicuads.getA1(), -2.1375367952754485, Epsilon);
@@ -242,7 +244,7 @@ TEST(DigitalFiltersTEST, TEST_LowShelf)
 
     BicuadCoefficients bicuads;
 
-    bicuads = BicuadCoefficients::LowShelf(5, 100,  1000);
+    bicuads = IIRFilters::LowShelf(5, 100,  1000);
 
     ASSERT_NEAR(bicuads.getA0(), 1.1504206767498881, Epsilon);
     ASSERT_NEAR(bicuads.getA1(), -1.0379824010070995, Epsilon);
@@ -259,7 +261,7 @@ TEST(DigitalFiltersTEST, TEST_LowShelfQ)
 
     BicuadCoefficients bicuads;
 
-    bicuads = BicuadCoefficients::LowShelfQ(5, 100, 1 / sqrt(2), 1000);
+    bicuads = IIRFilters::LowShelfQ(5, 100, 1 / sqrt(2), 1000);
 
 
     ASSERT_NEAR(bicuads.getA0(), 1.1504206767498881, Epsilon);
@@ -277,7 +279,7 @@ TEST(DigitalFiltersTEST, TEST_Notch)
 
     BicuadCoefficients bicuads;
 
-    bicuads = BicuadCoefficients::Notch(100, 10, 1000);
+    bicuads = IIRFilters::Notch(100, 10, 1000);
 
 
     ASSERT_NEAR(bicuads.getA0(), 0.9714498065192796, Epsilon);
@@ -295,7 +297,7 @@ TEST(DigitalFiltersTEST, TEST_OnePoleHighPass)
 
     BicuadCoefficients bicuads;
 
-    bicuads = BicuadCoefficients::OnePoleHighPass(100, 1000);
+    bicuads = IIRFilters::OnePoleHighPass(100, 1000);
 
 
     ASSERT_NEAR(bicuads.getA0(), 0.9189974078420569, Epsilon);
@@ -317,7 +319,7 @@ TEST(DigitalFiltersTEST, Test_OnePoleLowPass)
 
     BicuadCoefficients bicuads;
 
-    bicuads = BicuadCoefficients::OnePoleLowPass(100, 1000);
+    bicuads = IIRFilters::OnePoleLowPass(100, 1000);
 
     ASSERT_NEAR(bicuads.getA0(), 0.4665119089088967, Epsilon);
 
@@ -337,7 +339,7 @@ TEST(DigitalFiltersTEST, Test_PeakEq)
 
     BicuadCoefficients bicuads;
 
-    bicuads = BicuadCoefficients::PeakEq(5, 100, 10, 1000);
+    bicuads = IIRFilters::PeakEq(5, 100, 10, 1000);
 
 
     ASSERT_NEAR(bicuads.getA0(), 1.0222200277386724, Epsilon);
@@ -379,12 +381,12 @@ TEST(DigitalFiltersTEST, Test_EvalBicuad)
 
     std::complex<long double> res;
 
-    w = FilterEvaluator<long double>::HzToW(110.0) / fs;
+    w = FilterUtils<long double>::HzToW (110.0) / fs;
 
     res = FilterEvaluator<long double>::EvalBicuad(
       zeros[0], zeros[1], zeros[2], poles[1], poles[2], w);
 
-    magnitude_db = FilterEvaluator<long double>::GainTodB(abs(res));
+    magnitude_db = FilterUtils<long double>::GainTodB(abs(res));
     phase = arg(res);
 
 
@@ -392,12 +394,12 @@ TEST(DigitalFiltersTEST, Test_EvalBicuad)
     ASSERT_NEAR(phase, -2.604320565152820e-01, Epsilon);
 
 
-    w = FilterEvaluator<long double>::HzToW(90.0) / fs;
+    w = FilterUtils<long double>::HzToW (90.0) / fs;
 
     res = FilterEvaluator<long double>::EvalBicuad(
       zeros[0], zeros[1], zeros[2], poles[1], poles[2], w);
 
-    magnitude_db = FilterEvaluator<long double>::GainTodB(abs(res));
+    magnitude_db = FilterUtils<long double>::GainTodB(abs(res));
     phase = arg(res);
 
 
@@ -406,13 +408,13 @@ TEST(DigitalFiltersTEST, Test_EvalBicuad)
     ASSERT_NEAR(phase, 2.509964622124102e-01, Epsilon);
 
 
-    w = FilterEvaluator<long double>::HzToW(100.0) / fs; 
+    w = FilterUtils<long double>::HzToW (100.0) / fs;
 
     res =
       FilterEvaluator<long double>::EvalBicuad(
       zeros[0], zeros[1], zeros[2], poles[1], poles[2], w);
 
-    magnitude_db = FilterEvaluator<long double>::GainTodB(abs(res));
+    magnitude_db = FilterUtils<long double>::GainTodB(abs(res));
     phase = arg(res);
 
 
@@ -421,17 +423,17 @@ TEST(DigitalFiltersTEST, Test_EvalBicuad)
 
     BicuadCoefficients bicuads;
 
-    bicuads = BicuadCoefficients::PeakEq(5, 100, 10, 1000);
+    bicuads = IIRFilters::PeakEq(5, 100, 10, 1000);
 
 
-    w = FilterEvaluator<long double>::HzToW(100.0) / fs;
+    w = FilterUtils<long double>::HzToW (100.0) / fs;
 
     res =
       FilterEvaluator<long double>::EvalBicuad(
       bicuads.getA0(), bicuads.getA1(), bicuads.getA2(),
       bicuads.getB1(), bicuads.getB2(), w);
 
-    magnitude_db = FilterEvaluator<long double>::GainTodB(abs(res));
+    magnitude_db = FilterUtils<long double>::GainTodB(abs(res));
     phase = arg(res);
 
 
@@ -466,12 +468,12 @@ TEST(DigitalFiltersTEST, Test_EvalBicuadTrig)
 
   std::pair<long double, long double> res;
 
-  w = FilterEvaluator<long double>::HzToW(110.0) / fs;
+  w = FilterUtils<long double>::HzToW (110.0) / fs;
 
   res = FilterEvaluator<long double>::EvalBicuadTrig(
     zeros[0], zeros[1], zeros[2], poles[1], poles[2], w);
 
-  magnitude_db = FilterEvaluator<long double>::GainTodB(res.first);
+  magnitude_db = FilterUtils<long double>::GainTodB(res.first);
   phase = res.second;
 
 
@@ -479,12 +481,12 @@ TEST(DigitalFiltersTEST, Test_EvalBicuadTrig)
   ASSERT_NEAR(phase, -2.604320565152820e-01, Epsilon);
 
 
-  w = FilterEvaluator<long double>::HzToW(90.0) / fs;
+  w = FilterUtils<long double>::HzToW (90.0) / fs;
 
   res = FilterEvaluator<long double>::EvalBicuadTrig(
     zeros[0], zeros[1], zeros[2], poles[1], poles[2], w);
 
-  magnitude_db = FilterEvaluator<long double>::GainTodB(res.first);
+  magnitude_db = FilterUtils<long double>::GainTodB(res.first);
   phase = res.second;
 
 
@@ -493,13 +495,13 @@ TEST(DigitalFiltersTEST, Test_EvalBicuadTrig)
   ASSERT_NEAR(phase, 2.509964622124102e-01, Epsilon);
 
 
-  w = FilterEvaluator<long double>::HzToW(100.0) / fs;
+  w = FilterUtils<long double>::HzToW (100.0) / fs;
 
   res =
     FilterEvaluator<long double>::EvalBicuadTrig(
     zeros[0], zeros[1], zeros[2], poles[1], poles[2], w);
 
-  magnitude_db = FilterEvaluator<long double>::GainTodB(res.first);
+  magnitude_db = FilterUtils<long double>::GainTodB(res.first);
   phase = res.second;
 
   ASSERT_NEAR(magnitude_db, 5, Epsilon);
@@ -507,17 +509,17 @@ TEST(DigitalFiltersTEST, Test_EvalBicuadTrig)
 
   BicuadCoefficients bicuads;
 
-  bicuads = BicuadCoefficients::PeakEq(5, 100, 10, 1000);
+  bicuads = IIRFilters::PeakEq(5, 100, 10, 1000);
 
 
-  w = FilterEvaluator<long double>::HzToW(100.0) / fs;
+  w = FilterUtils<long double>::HzToW (100.0) / fs;
 
   res =
     FilterEvaluator<long double>::EvalBicuadTrig(
     bicuads.getA0(), bicuads.getA1(), bicuads.getA2(),
     bicuads.getB1(), bicuads.getB2(), w);
 
-  magnitude_db = FilterEvaluator<long double>::GainTodB(res.first);
+  magnitude_db = FilterUtils<long double>::GainTodB(res.first);
   phase = res.second;
 
 
@@ -612,18 +614,18 @@ TEST(DigitalFiltersTEST, Test_FrequencyResponse)
 
     magnitude_db = 20L * log10(abs(res));
     phase = arg(res);
-   
+
 
     ASSERT_NEAR(magnitude_db, 1.5041110035372895, Epsilon);
 
     ASSERT_NEAR(phase, -2.604320565152820e-01, Epsilon);
 
-    w = FilterEvaluator<long double>::HzToW(90) / fs;
+    w = FilterUtils<long double>::HzToW (90) / fs;
 
     res = FilterEvaluator<long double>
         ::FrequencyResponse(zeros, poles, 3, w);
 
-    magnitude_db = FilterEvaluator<long double>::GainTodB(abs(res));
+    magnitude_db = FilterUtils<long double>::GainTodB(abs(res));
     phase = arg(res);
 
 
@@ -638,26 +640,26 @@ TEST(DigitalFiltersTEST, TEST_Parallel)
 {
   BicuadCoefficients bicuads;
 
-  bicuads = BicuadCoefficients::PeakEq(5, 100, 10, 1000);
- 
+  bicuads = IIRFilters::PeakEq(5, 100, 10, 1000);
+
 
   auto start = std::chrono::high_resolution_clock::now();
 
 
   auto res = IIRfreqResponse::FrequencyResponse(bicuads.GetZeros(),
     bicuads.GetPoles(),
-    randomSet, 
+    randomSet,
     1000);
 
 
   auto end = std::chrono::high_resolution_clock::now();
 
 
-  auto duration = 
+  auto duration =
     std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 
 
-  std::cout << "Exec Time: " << duration.count()/1000 
+  std::cout << "Exec Time: " << duration.count()/1000
     << " miliseconds" << std::endl;
 
   EXPECT_EQ(1, 1);
@@ -673,22 +675,22 @@ TEST(DigitalFiltersTEST, Test_Size)
     double doubleType;
     long double longDoubleType;
 
-    // Calculate and Print 
-    // the size of integer type 
+    // Calculate and Print
+    // the size of integer type
     std::cout << "Size of int is: " << sizeof(integerType)
         << "\n";
 
-    // Calculate and Print 
-    // the size of doubleType 
+    // Calculate and Print
+    // the size of doubleType
     std::cout << "Size of char is: " << sizeof(charType) << "\n";
 
-    // Calculate and Print 
-    // the size of charType 
+    // Calculate and Print
+    // the size of charType
     std::cout << "Size of float is: " << sizeof(floatType)
         << "\n";
 
-    // Calculate and Print 
-    // the size of floatType 
+    // Calculate and Print
+    // the size of floatType
     std::cout << "Size of double is: " << sizeof(doubleType)
         << "\n";
 

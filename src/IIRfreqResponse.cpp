@@ -1,6 +1,8 @@
 #include "IIRfreqResponse.h"
 #include "FilterEvaluator.h"
 #include <omp.h>
+#include <FilterUtils.h>
+
 
 using namespace DigitalFilters;
 
@@ -8,7 +10,7 @@ using namespace DigitalFilters;
 std::complex<double> IIRfreqResponse::EvalBicuad(
 	const BicuadCoefficients& coef, double fc, double fs)
 {
-	double w = FilterEvaluator<double>::HzToW(fc) / fs;
+	double w = FilterUtils<double>::HzToW(fc) / fs;
 	return	FilterEvaluator<double>::EvalBicuad(
 		coef.getA0(), coef.getA1(), coef.getA2(),
 		coef.getB1(), coef.getB2(), w);
@@ -19,7 +21,7 @@ std::complex<double> IIRfreqResponse::EvalBicuad(
 std::complex<double> DigitalFilters::IIRfreqResponse::EvalBicuad(double a0
 	, double a1, double a2, double b1, double b2, double fc, double fs)
 {
-	double w = FilterEvaluator<double>::HzToW(fc) / fs;
+	double w = FilterUtils<double>::HzToW(fc) / fs;
 	return	FilterEvaluator<double>::EvalBicuad(a0, a1, a2, b1, b2, w);
 }
 #pragma endregion
@@ -29,7 +31,7 @@ std::complex<double> DigitalFilters::IIRfreqResponse::FrequencyResponse(
 	const std::vector<double>& zeros, const std::vector<double>& poles,
 	double fc, double fs)
 {
-	double w = FilterEvaluator<double>::HzToW(fc) / fs;
+	double w = FilterUtils<double>::HzToW(fc) / fs;
 
 	int filterOrder = static_cast<int>(std::min(poles.size(), zeros.size()));
 
@@ -53,7 +55,7 @@ std::vector<std::complex<double>> IIRfreqResponse::FrequencyResponse(
 #pragma omp parallel for
 	for(int i = 0; i < (int)freqs.size(); ++i)
 	{
-		double w = FilterEvaluator<double>::HzToW(freqs[i]) / fs;
+		double w = FilterUtils<double>::HzToW(freqs[i]) / fs;
 		result[i] = FilterEvaluator<double>::FrequencyResponse(
 			zeros.data(), poles.data(), filterOrder, w);
 	}
@@ -67,7 +69,7 @@ std::vector<std::complex<double>> IIRfreqResponse::FrequencyResponse(
 std::pair<double, double> DigitalFilters::IIRfreqResponse::EvalBicuadTrig(
 	const BicuadCoefficients& coef, double fc, double fs)
 {
-	double w = FilterEvaluator<double>::HzToW(fc) / fs;
+	double w = FilterUtils<double>::HzToW(fc) / fs;
 
 	return	FilterEvaluator<double>::
 		EvalBicuadTrig(coef.getA0(), coef.getA1(), coef.getA2(),
@@ -80,7 +82,7 @@ std::pair<double, double> DigitalFilters::IIRfreqResponse::EvalBicuadTrig(
 std::pair<double, double> DigitalFilters::IIRfreqResponse::EvalBicuadTrig(double a0
 	, double a1, double a2, double b1, double b2, double fc, double fs)
 {
-	double w = FilterEvaluator<double>::HzToW(fc) / fs;
+	double w = FilterUtils<double>::HzToW(fc) / fs;
 	return	FilterEvaluator<double>::EvalBicuadTrig(a0, a1, a2, b1, b2, w);
 }
 #pragma endregion
@@ -91,7 +93,7 @@ DigitalFilters::IIRfreqResponse::FrequencyResponseTrig(
 	const std::vector<double>& poles, const std::vector<double>& zeros,
 	double fc, double fs)
 {
-	double w = FilterEvaluator<double>::HzToW(fc) / fs;
+	double w = FilterUtils<double>::HzToW(fc) / fs;
 
 	int filterOrder = static_cast<int>(std::min(poles.size(), zeros.size()));
 	return FilterEvaluator<double>::FrequencyResponseTrig(
@@ -113,7 +115,7 @@ std::vector<std::pair<double, double>> IIRfreqResponse::FrequencyResponseTrig(
 #pragma omp parallel for
 	for(int i = 0; i < (int)freqs.size(); ++i)
 	{
-		double w = FilterEvaluator<double>::HzToW(freqs[i]) / fs;
+		double w = FilterUtils<double>::HzToW(freqs[i]) / fs;
 		result[i] = FilterEvaluator<double>::FrequencyResponseTrig(
 			zeros.data(), poles.data(), filterOrder, w);
 	}
@@ -126,7 +128,7 @@ std::vector<std::pair<double, double>> IIRfreqResponse::FrequencyResponseTrig(
 #pragma region GainTodB()
 double DigitalFilters::IIRfreqResponse::GainTodB(double g)
 {
-	return FilterEvaluator<double>::GainTodB(g);
+	return FilterUtils<double>::GainTodB(g);
 }
 
 #pragma endregion
@@ -134,7 +136,7 @@ double DigitalFilters::IIRfreqResponse::GainTodB(double g)
 #pragma region HzToW()
 double DigitalFilters::IIRfreqResponse::HzToW(double hz)
 {
-	return FilterEvaluator<double>::HzToW(hz);
+	return FilterUtils<double>::HzToW(hz);
 }
 
 #pragma endregion

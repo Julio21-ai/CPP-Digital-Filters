@@ -5,7 +5,6 @@
 
 #include "DigitalFiltersConstants.h"
 #include "BicuadCoefficients.h"
-#include "DigitalFilters.h"
 #include "FilterEvaluator.h"
 
 

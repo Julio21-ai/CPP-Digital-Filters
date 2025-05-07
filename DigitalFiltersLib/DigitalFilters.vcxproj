@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\BicuadCoefficients.cpp" />
+    <ClCompile Include="..\src\IIRFilters.cpp" />
     <ClCompile Include="..\src\IIRfreqResponse.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -47,6 +48,8 @@
     <ClInclude Include="..\include\DigitalFilters.h" />
     <ClInclude Include="..\include\DigitalFiltersConstants.h" />
     <ClInclude Include="..\include\FilterEvaluator.h" />
+    <ClInclude Include="..\include\FilterUtils.h" />
+    <ClInclude Include="..\include\IIRFilters.h" />
     <ClInclude Include="..\include\IIRfreqResponse.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -93,7 +96,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Intel|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>Intel C++ Compiler 2023</PlatformToolset>
+    <PlatformToolset>Intel C++ Compiler 2025</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <EnableSyclOffload>true</EnableSyclOffload>
