@@ -39,18 +39,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\BicuadCoefficients.cpp" />
-    <ClCompile Include="..\src\IIRFilters.cpp" />
-    <ClCompile Include="..\src\IIRfreqResponse.cpp" />
+    <ClCompile Include="IIRFiltersDesignExport.cpp" />
+    <ClCompile Include="IIRfreqResponse.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\include\BicuadCoefficients.h" />
-    <ClInclude Include="..\include\DigitalFilters.h" />
-    <ClInclude Include="..\include\DigitalFiltersConstants.h" />
-    <ClInclude Include="..\include\FilterEvaluator.h" />
-    <ClInclude Include="..\include\FilterUtils.h" />
-    <ClInclude Include="..\include\IIRFilters.h" />
-    <ClInclude Include="..\include\IIRfreqResponse.h" />
+    <ClInclude Include="..\include\Biquad.h" />
+    <ClInclude Include="..\include\Constants.h" />
+    <ClInclude Include="..\include\Evaluator.h" />
+    <ClInclude Include="..\include\FrequencyResponse.h" />
+    <ClInclude Include="..\include\Utils.h" />
+    <ClInclude Include="..\include\IIRDesign.h" />
+    <ClInclude Include="..\include\IIRDesignImpl.h" />
+    <ClInclude Include="DigitalFiltersModuleExport.h" />
+    <ClInclude Include="IIRfreqResponse.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5810405D-6B53-45E0-9746-6E87BDE3C717}</ProjectGuid>
@@ -96,10 +97,10 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Intel|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>Intel C++ Compiler 2025</PlatformToolset>
+    <PlatformToolset>Intel(R) oneAPI DPC++ Compiler 2025</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <EnableSyclOffload>true</EnableSyclOffload>
+    <UseInteloneTBB>true</UseInteloneTBB>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">
     <PlatformToolset>v143</PlatformToolset>
@@ -146,21 +147,36 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Intel|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Intel|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)\include;$(oneTBBIncludeDir);$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Debug|Win32'">
+    <IncludePath>$(SolutionDir)\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">
+    <IncludePath>$(SolutionDir)\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|x64'">
+    <IncludePath>$(SolutionDir)\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -171,26 +187,15 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;DIGITALFILTERS_EXPORTS</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\include\</AdditionalIncludeDirectories>
       <FloatingPointModel>Precise</FloatingPointModel>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>set "orig=$(OutDir)"
-set "_destino=..\..\Finals\bin\$(Configuration)"
-set "HeadersDir=..\include"
-set "HeadersDest=..\..\Finals\include"
-
-IF NOT EXIST "%_destino%" mkdir "%_destino%"
-IF NOT EXIST "%HeadersDest%" mkdir "%HeadersDest%"
-
-REM Copy binaries and lib
-xcopy "%orig%\$(TargetName).*" "%_destino%" /y
-
-REM Copy header files
-for %%i in (
-"%HeadersDir%\IIRfreqResponse.h" "%HeadersDir%\BicuadCoefficients.h" "%HeadersDir%\DigitalFilters.h" "%HeadersDir%\DigitalFiltersConstants.h" "%HeadersDir%\FilterEvaluator.h") do xcopy "%%i" "%HeadersDest%" /y</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -203,6 +208,8 @@ for %%i in (
       <FloatingPointModel>Precise</FloatingPointModel>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -224,20 +231,8 @@ REM Copy header files
 for %%i in ("%HeadersDir%\BicuadCoefficients.h" "%HeadersDir%\DigitalFiltersConstants.h" "%HeadersDir%\IIRfreqResponse.h") do xcopy "%%i" "%HeadersDest%" /y</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Command>set "orig=$(OutDir)"
-set "_destino=..\..\Finals\bin\$(Configuration)"
-set "HeadersDir=..\include"
-set "HeadersDest=..\..\Finals\include"
-
-IF NOT EXIST "%_destino%" mkdir "%_destino%"
-IF NOT EXIST "%HeadersDest%" mkdir "%HeadersDest%"
-
-REM Copy binaries and lib
-xcopy "%orig%\$(TargetName).*" "%_destino%" /y
-
-REM Copy header files
-for %%i in (
-"%HeadersDir%\IIRfreqResponse.h" "%HeadersDir%\BicuadCoefficients.h" "%HeadersDir%\DigitalFilters.h" "%HeadersDir%\DigitalFiltersConstants.h" "%HeadersDir%\FilterEvaluator.h") do xcopy "%%i" "%HeadersDest%" /y</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -253,6 +248,7 @@ for %%i in (
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <AdditionalIncludeDirectories>..\include\</AdditionalIncludeDirectories>
       <FloatingPointModel>Precise</FloatingPointModel>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -262,20 +258,8 @@ for %%i in (
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
     <PostBuildEvent>
-      <Command>set "orig=$(OutDir)"
-set "_destino=..\..\Finals\bin\$(Configuration)"
-set "HeadersDir=..\include"
-set "HeadersDest=..\..\Finals\include"
-
-IF NOT EXIST "%_destino%" mkdir "%_destino%"
-IF NOT EXIST "%HeadersDest%" mkdir "%HeadersDest%"
-
-REM Copy binaries and lib
-xcopy "%orig%\$(TargetName).*" "%_destino%" /y
-
-REM Copy header files
-for %%i in (
-"%HeadersDir%\IIRfreqResponse.h" "%HeadersDir%\BicuadCoefficients.h" "%HeadersDir%\DigitalFilters.h" "%HeadersDir%\DigitalFiltersConstants.h" "%HeadersDir%\FilterEvaluator.h") do xcopy "%%i" "%HeadersDest%" /y</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Intel|Win32'">
@@ -291,6 +275,7 @@ for %%i in (
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <AdditionalIncludeDirectories>..\include\</AdditionalIncludeDirectories>
       <FloatingPointModel>Precise</FloatingPointModel>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -300,20 +285,8 @@ for %%i in (
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>
     <PostBuildEvent>
-      <Command>set "orig=$(OutDir)"
-set "_destino=..\..\Finals\bin\$(Configuration)"
-set "HeadersDir=..\include"
-set "HeadersDest=..\..\Finals\include"
-
-IF NOT EXIST "%_destino%" mkdir "%_destino%"
-IF NOT EXIST "%HeadersDest%" mkdir "%HeadersDest%"
-
-REM Copy binaries and lib
-xcopy "%orig%\$(TargetName).*" "%_destino%" /y
-
-REM Copy header files
-for %%i in (
-"%HeadersDir%\IIRfreqResponse.h" "%HeadersDir%\BicuadCoefficients.h" "%HeadersDir%\DigitalFilters.h" "%HeadersDir%\DigitalFiltersConstants.h" "%HeadersDir%\FilterEvaluator.h") do xcopy "%%i" "%HeadersDest%" /y</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -336,6 +309,7 @@ for %%i in (
       <AdditionalOptions>/openmp:experimental %(AdditionalOptions)</AdditionalOptions>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -356,20 +330,8 @@ copy "%orig%\*.dll" "%destino%$(Configuration)"
 </Command>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>set "orig=$(OutDir)"
-set "_destino=..\..\Finals\bin\$(Configuration)"
-set "HeadersDir=..\include"
-set "HeadersDest=..\..\Finals\include"
-
-IF NOT EXIST "%_destino%" mkdir "%_destino%"
-IF NOT EXIST "%HeadersDest%" mkdir "%HeadersDest%"
-
-REM Copy binaries and lib
-xcopy "%orig%\$(TargetName).*" "%_destino%" /y
-
-REM Copy header files
-for %%i in (
-"%HeadersDir%\IIRfreqResponse.h" "%HeadersDir%\BicuadCoefficients.h" "%HeadersDir%\DigitalFilters.h" "%HeadersDir%\DigitalFiltersConstants.h" "%HeadersDir%\FilterEvaluator.h") do xcopy "%%i" "%HeadersDest%" /y</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Intel|x64'">
@@ -377,7 +339,6 @@ for %%i in (
       <WarningLevel>Level4</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <Optimization>MaxSpeedHighLevel</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;DIGITALFILTERS_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
@@ -391,10 +352,12 @@ for %%i in (
       <UseProcessorExtensions>WHISKEYLAKE</UseProcessorExtensions>
       <OpenMP>GenerateParallelCode</OpenMP>
       <OpenMPOffloading>None</OpenMPOffloading>
-      <EnableSyclOffload>true</EnableSyclOffload>
+      <EnableSyclOffload>false</EnableSyclOffload>
       <OptimizeForWindowsApplication>true</OptimizeForWindowsApplication>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <SYCLWarningLevel>Level3</SYCLWarningLevel>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <PGOUsePreTrainedModel>false</PGOUsePreTrainedModel>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -404,22 +367,12 @@ for %%i in (
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <SupportUnloadOfDelayLoadedDLL>true</SupportUnloadOfDelayLoadedDLL>
       <LargeAddressAware>true</LargeAddressAware>
+      <SpecifyCPUTargetForAOT>AVX2</SpecifyCPUTargetForAOT>
+      <ExposeExportedSymbols>false</ExposeExportedSymbols>
     </Link>
     <PostBuildEvent>
-      <Command>set "orig=$(OutDir)"
-set "_destino=..\..\Finals\bin\$(Configuration)"
-set "HeadersDir=..\include"
-set "HeadersDest=..\..\Finals\include"
-
-IF NOT EXIST "%_destino%" mkdir "%_destino%"
-IF NOT EXIST "%HeadersDest%" mkdir "%HeadersDest%"
-
-REM Copy binaries and lib
-xcopy "%orig%\$(TargetName).*" "%_destino%" /y
-
-REM Copy header files
-for %%i in (
-"%HeadersDir%\IIRfreqResponse.h" "%HeadersDir%\BicuadCoefficients.h" "%HeadersDir%\DigitalFilters.h" "%HeadersDir%\DigitalFiltersConstants.h" "%HeadersDir%\FilterEvaluator.h") do xcopy "%%i" "%HeadersDest%" /y</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|x64'">
@@ -451,22 +404,11 @@ for %%i in (
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <FloatingPointModel>Precise</FloatingPointModel>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <PostBuildEvent>
-      <Command>set "orig=$(OutDir)"
-set "_destino=..\..\Finals\bin\$(Configuration)"
-set "HeadersDir=..\include"
-set "HeadersDest=..\..\Finals\include"
-
-IF NOT EXIST "%_destino%" mkdir "%_destino%"
-IF NOT EXIST "%HeadersDest%" mkdir "%HeadersDest%"
-
-REM Copy binaries and lib
-xcopy "%orig%\$(TargetName).*" "%_destino%" /y
-
-REM Copy header files
-for %%i in (
-"%HeadersDir%\IIRfreqResponse.h" "%HeadersDir%\BicuadCoefficients.h" "%HeadersDir%\DigitalFilters.h" "%HeadersDir%\DigitalFiltersConstants.h" "%HeadersDir%\FilterEvaluator.h") do xcopy "%%i" "%HeadersDest%" /y</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <Lib>
       <SubSystem>Windows</SubSystem>
@@ -477,22 +419,11 @@ for %%i in (
       <AdditionalIncludeDirectories>..\include\</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;_USE_MATH_DEFINES;DIGITALFILTERS_STATIC_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <FloatingPointModel>Precise</FloatingPointModel>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <PostBuildEvent>
-      <Command>set "orig=$(OutDir)"
-set "_destino=..\..\Finals\bin\$(Configuration)"
-set "HeadersDir=..\include"
-set "HeadersDest=..\..\Finals\include"
-
-IF NOT EXIST "%_destino%" mkdir "%_destino%"
-IF NOT EXIST "%HeadersDest%" mkdir "%HeadersDest%"
-
-REM Copy binaries and lib
-xcopy "%orig%\$(TargetName).*" "%_destino%" /y
-
-REM Copy header files
-for %%i in (
-"%HeadersDir%\IIRfreqResponse.h" "%HeadersDir%\BicuadCoefficients.h" "%HeadersDir%\DigitalFilters.h" "%HeadersDir%\DigitalFiltersConstants.h" "%HeadersDir%\FilterEvaluator.h") do xcopy "%%i" "%HeadersDest%" /y</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Static Release|Win32'">
@@ -504,22 +435,11 @@ for %%i in (
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <PreprocessorDefinitions>DIGITALFILTERS_STATIC_LIB;_USE_MATH_DEFINES;NDEBUG;</PreprocessorDefinitions>
       <FloatingPointModel>Precise</FloatingPointModel>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <PostBuildEvent>
-      <Command>set "orig=$(OutDir)"
-set "_destino=..\..\Finals\bin\$(Configuration)"
-set "HeadersDir=..\include"
-set "HeadersDest=..\..\Finals\include"
-
-IF NOT EXIST "%_destino%" mkdir "%_destino%"
-IF NOT EXIST "%HeadersDest%" mkdir "%HeadersDest%"
-
-REM Copy binaries and lib
-xcopy "%orig%\$(TargetName).*" "%_destino%" /y
-
-REM Copy header files
-for %%i in (
-"%HeadersDir%\IIRfreqResponse.h" "%HeadersDir%\BicuadCoefficients.h" "%HeadersDir%\DigitalFilters.h" "%HeadersDir%\DigitalFiltersConstants.h" "%HeadersDir%\FilterEvaluator.h") do xcopy "%%i" "%HeadersDest%" /y</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

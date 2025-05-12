@@ -5,11 +5,15 @@
 #include "..\include\DigitalFilters.h"
 #include <random>
 #include <chrono>
-#include "..\include\IIRfreqResponse.h"
-#include "..\include\IIRFilters.h"
-#include "../include/FilterUtils.h"
+#include "..\include\IIRDesign.h"
+#include "..\include\Utils.h"
+#include "..\include\Evaluator.h"
+#include "..\DigitalFiltersLib\IIRfreqResponse.h"
 
 using namespace DigitalFilters;
+using namespace DigitalFilters::Utils;
+using namespace DigitalFilters::Eval;
+using BiquadCoefficientsd = Biquad<double>;
 
 long  double Epsilon = 8.8817841970012523e-15;
 
@@ -53,7 +57,7 @@ typedef union
     return randomFloats;
   }
 
-  std::vector<double> randomSet = generateRandomFloats(44800000);
+  std::vector<double> randomSet = generateRandomFloats(448000000);
 
 TEST(TestCaseName, TestName) {
   EXPECT_EQ(1, 1);
@@ -64,16 +68,16 @@ TEST(DigitalFiltersTEST, TEST_LowShelf1stOrder)
 {
     using namespace DigitalFilters;
 
-    BicuadCoefficients bicuads;
+    BiquadCoefficientsd bicuads;
 
-    bicuads = IIRFilters::LowShelf1stOrder(5, 100, 1000);
+    bicuads = IIR::LowShelf1stOrder(5.0, 100.0, 1000.0);
 
-    ASSERT_NEAR(bicuads.getA0(), 1.1908631219032908, Epsilon);
-    ASSERT_NEAR(bicuads.getA1(), -0.31866232759113794, Epsilon);
-    ASSERT_NEAR(bicuads.getA2(), 0, Epsilon);
+    ASSERT_NEAR(bicuads.a0, 1.1908631219032908, Epsilon);
+    ASSERT_NEAR(bicuads.a1, -0.31866232759113794, Epsilon);
+    ASSERT_NEAR(bicuads.a2, 0, Epsilon);
 
-    ASSERT_NEAR(bicuads.getB1(), -0.5095254494944288, Epsilon);
-    ASSERT_NEAR(bicuads.getB2(), 0, Epsilon);
+    ASSERT_NEAR(bicuads.b1, -0.5095254494944288, Epsilon);
+    ASSERT_NEAR(bicuads.b2, 0, Epsilon);
 
 }
 
@@ -81,16 +85,16 @@ TEST(DigitalFiltersTEST, TEST_HighShelf1stOrder)
 {
     using namespace DigitalFilters;
 
-    BicuadCoefficients bicuads;
+    BiquadCoefficientsd bicuads;
 
-    bicuads = IIRFilters::HighShelf1stOrder(5, 100, 1000);
+    bicuads = IIR::HighShelf1stOrder(5.0, 100.0, 1000.0);
 
-    ASSERT_NEAR(bicuads.getA0(), 1.587416288135632,Epsilon);
-    ASSERT_NEAR(bicuads.getA1(), -1.0969417376300605, Epsilon);
-    ASSERT_NEAR(bicuads.getA2(), 0, Epsilon);
+    ASSERT_NEAR(bicuads.a0, 1.587416288135632,Epsilon);
+    ASSERT_NEAR(bicuads.a1, -1.0969417376300605, Epsilon);
+    ASSERT_NEAR(bicuads.a2, 0, Epsilon);
 
-    ASSERT_NEAR(bicuads.getB1(), -0.5095254494944288, Epsilon);
-    ASSERT_NEAR(bicuads.getB2(), 0, Epsilon);
+    ASSERT_NEAR(bicuads.b1, -0.5095254494944288, Epsilon);
+    ASSERT_NEAR(bicuads.b2, 0, Epsilon);
 
 }
 
@@ -98,16 +102,16 @@ TEST(DigitalFiltersTEST, TEST_HighPass1stOrder)
 {
     using namespace DigitalFilters;
 
-    BicuadCoefficients bicuads;
+    BiquadCoefficientsd bicuads;
 
-    bicuads = IIRFilters::HighPass1stOrder(100, 1000);
+    bicuads = IIR::HighPass1stOrder(100.0, 1000.0);
 
-    ASSERT_NEAR(bicuads.getA0(), 0.7547627247472144, Epsilon);
-    ASSERT_NEAR(bicuads.getA1(), -0.7547627247472144, Epsilon);
-    ASSERT_NEAR(bicuads.getA2(), 0, Epsilon);
+    ASSERT_NEAR(bicuads.a0, 0.7547627247472144, Epsilon);
+    ASSERT_NEAR(bicuads.a1, -0.7547627247472144, Epsilon);
+    ASSERT_NEAR(bicuads.a2, 0, Epsilon);
 
-    ASSERT_NEAR(bicuads.getB1(), -0.5095254494944288, Epsilon);
-    ASSERT_NEAR(bicuads.getB2(), 0, Epsilon);
+    ASSERT_NEAR(bicuads.b1, -0.5095254494944288, Epsilon);
+    ASSERT_NEAR(bicuads.b2, 0, Epsilon);
 
 }
 
@@ -115,16 +119,16 @@ TEST(DigitalFiltersTEST, TEST_LowPass1stOrder)
 {
     using namespace DigitalFilters;
 
-    BicuadCoefficients bicuads;
+    BiquadCoefficientsd bicuads;
 
-    bicuads = IIRFilters::LowPass1stOrder( 100, 1000);
+    bicuads = IIR::LowPass1stOrder( 100.0, 1000.0);
 
-    ASSERT_NEAR(bicuads.getA0(), 0.24523727525278555, Epsilon);
-    ASSERT_NEAR(bicuads.getA1(), 0.24523727525278555, Epsilon);
-    ASSERT_NEAR(bicuads.getA2(), 0, Epsilon);
+    ASSERT_NEAR(bicuads.a0, 0.24523727525278555, Epsilon);
+    ASSERT_NEAR(bicuads.a1, 0.24523727525278555, Epsilon);
+    ASSERT_NEAR(bicuads.a2, 0, Epsilon);
 
-    ASSERT_NEAR(bicuads.getB1(), -0.5095254494944289, Epsilon);
-    ASSERT_NEAR(bicuads.getB2(), 0, Epsilon);
+    ASSERT_NEAR(bicuads.b1, -0.5095254494944289, Epsilon);
+    ASSERT_NEAR(bicuads.b2, 0, Epsilon);
 
 }
 
@@ -132,16 +136,16 @@ TEST(DigitalFiltersTEST, TEST_AllPass)
 {
     using namespace DigitalFilters;
 
-    BicuadCoefficients bicuads;
+    BiquadCoefficientsd bicuads;
 
-    bicuads = IIRFilters::AllPass1stOrder( 100, 1000);
+    bicuads = IIR::AllPass1stOrder( 100.0, 1000.0);
 
-    ASSERT_NEAR(bicuads.getA0(), 0.5095254494944288, Epsilon);
-    ASSERT_NEAR(bicuads.getA1(), -1, Epsilon);
-    ASSERT_NEAR(bicuads.getA2(), 0, Epsilon);
+    ASSERT_NEAR(bicuads.a0, 0.5095254494944288, Epsilon);
+    ASSERT_NEAR(bicuads.a1, -1, Epsilon);
+    ASSERT_NEAR(bicuads.a2, 0, Epsilon);
 
-    ASSERT_NEAR(bicuads.getB1(), -0.5095254494944288, Epsilon);
-    ASSERT_NEAR(bicuads.getB2(), 0, Epsilon);
+    ASSERT_NEAR(bicuads.b1, -0.5095254494944288, Epsilon);
+    ASSERT_NEAR(bicuads.b2, 0, Epsilon);
 
 }
 
@@ -150,16 +154,16 @@ TEST(DigitalFiltersTEST, TEST_AllPassQ)
 {
     using namespace DigitalFilters;
 
-    BicuadCoefficients bicuads;
+    BiquadCoefficientsd bicuads;
 
-    bicuads = IIRFilters::AllPassQ(100, 10, 1000);
+    bicuads = IIR::AllPassQ(100.0, 10.0, 1000.0);
 
-    ASSERT_NEAR(bicuads.getA0(), 0.9428996130385592 , Epsilon);
-    ASSERT_NEAR(bicuads.getA1(), -1.5718388053127037, Epsilon);
-    ASSERT_NEAR(bicuads.getA2(), 1                  , Epsilon);
+    ASSERT_NEAR(bicuads.a0, 0.9428996130385592 , Epsilon);
+    ASSERT_NEAR(bicuads.a1, -1.5718388053127037, Epsilon);
+    ASSERT_NEAR(bicuads.a2, 1                  , Epsilon);
 
-    ASSERT_NEAR(bicuads.getB1(), -1.5718388053127037, Epsilon);
-    ASSERT_NEAR(bicuads.getB2(), 0.9428996130385592, Epsilon);
+    ASSERT_NEAR(bicuads.b1, -1.5718388053127037, Epsilon);
+    ASSERT_NEAR(bicuads.b2, 0.9428996130385592, Epsilon);
 
 }
 
@@ -169,16 +173,16 @@ TEST(DigitalFiltersTEST, TEST_BandPass)
 {
     using namespace DigitalFilters;
 
-    BicuadCoefficients bicuads;
+    BiquadCoefficientsd bicuads;
 
-    bicuads = IIRFilters::BandPass(100, 10, 1000);
+    bicuads = IIR::BandPass(100.0, 10.0, 1000.0);
 
-    ASSERT_NEAR(bicuads.getA0(), 0.028550193480720448, Epsilon);
-    ASSERT_NEAR(bicuads.getA1(), 0, Epsilon);
-    ASSERT_NEAR(bicuads.getA2(), -0.028550193480720448, Epsilon);
+    ASSERT_NEAR(bicuads.a0, 0.028550193480720448, Epsilon);
+    ASSERT_NEAR(bicuads.a1, 0, Epsilon);
+    ASSERT_NEAR(bicuads.a2, -0.028550193480720448, Epsilon);
 
-    ASSERT_NEAR(bicuads.getB1(), -1.5718388053127037, Epsilon);
-    ASSERT_NEAR(bicuads.getB2(), 0.9428996130385592, Epsilon);
+    ASSERT_NEAR(bicuads.b1, -1.5718388053127037, Epsilon);
+    ASSERT_NEAR(bicuads.b2, 0.9428996130385592, Epsilon);
 
 }
 
@@ -188,16 +192,16 @@ TEST(DigitalFiltersTEST, TEST_HighPass)
 {
     using namespace DigitalFilters;
 
-    BicuadCoefficients bicuads;
+    BiquadCoefficientsd bicuads;
 
-    bicuads = IIRFilters::HighPass( 100,10 , 1000);
+    bicuads = IIR::HighPass( 100.0,10.0 , 1000.0);
 
-    ASSERT_NEAR(bicuads.getA0(), 0.8786846045878157, Epsilon);
-    ASSERT_NEAR(bicuads.getA1(), -1.7573692091756314, Epsilon);
-    ASSERT_NEAR(bicuads.getA2(), 0.8786846045878157, Epsilon);
+    ASSERT_NEAR(bicuads.a0, 0.8786846045878157, Epsilon);
+    ASSERT_NEAR(bicuads.a1, -1.7573692091756314, Epsilon);
+    ASSERT_NEAR(bicuads.a2, 0.8786846045878157, Epsilon);
 
-    ASSERT_NEAR(bicuads.getB1(), -1.5718388053127037, Epsilon);
-    ASSERT_NEAR(bicuads.getB2(), 0.9428996130385592, Epsilon);
+    ASSERT_NEAR(bicuads.b1, -1.5718388053127037, Epsilon);
+    ASSERT_NEAR(bicuads.b2, 0.9428996130385592, Epsilon);
 
 }
 
@@ -206,16 +210,16 @@ TEST(DigitalFiltersTEST, TEST_HighShelf)
 {
     using namespace DigitalFilters;
 
-    BicuadCoefficients bicuads;
+    BiquadCoefficientsd bicuads;
 
-    bicuads = IIRFilters::HighShelf(5, 100,  1000);
+    bicuads = IIR::HighShelf(5.0, 100.0,  1000.0);
 
-    ASSERT_NEAR(bicuads.getA0(), 1.595199772351261, Epsilon);
-    ASSERT_NEAR(bicuads.getA1(), -2.1375367952754485, Epsilon);
-    ASSERT_NEAR(bicuads.getA2(), 0.8121581184804753, Epsilon);
+    ASSERT_NEAR(bicuads.a0, 1.595199772351261, Epsilon);
+    ASSERT_NEAR(bicuads.a1, -2.1375367952754485, Epsilon);
+    ASSERT_NEAR(bicuads.a2, 0.8121581184804753, Epsilon);
 
-    ASSERT_NEAR(bicuads.getB1(), -1.1429805025399011, Epsilon);
-    ASSERT_NEAR(bicuads.getB2(), 0.4128015980961886, Epsilon);
+    ASSERT_NEAR(bicuads.b1, -1.1429805025399011, Epsilon);
+    ASSERT_NEAR(bicuads.b2, 0.4128015980961886, Epsilon);
 
 }
 
@@ -224,16 +228,16 @@ TEST(DigitalFiltersTEST, TEST_HighShelfQ)
 {
     using namespace DigitalFilters;
 
-    BicuadCoefficients bicuads;
+    BiquadCoefficientsd bicuads;
 
-    bicuads = IIRFilters::HighShelfQ(5, 100, 1 / sqrt(2), 1000);
+    bicuads = IIR::HighShelfQ( 5.0, 100.0, 1 / sqrt( 2.0 ), 1000.0 );
 
-    ASSERT_NEAR(bicuads.getA0(), 1.595199772351261, Epsilon);
-    ASSERT_NEAR(bicuads.getA1(), -2.1375367952754485, Epsilon);
-    ASSERT_NEAR(bicuads.getA2(), 0.8121581184804753, Epsilon);
+    ASSERT_NEAR(bicuads.a0, 1.595199772351261, Epsilon);
+    ASSERT_NEAR(bicuads.a1, -2.1375367952754485, Epsilon);
+    ASSERT_NEAR(bicuads.a2, 0.8121581184804753, Epsilon);
 
-    ASSERT_NEAR(bicuads.getB1(), -1.1429805025399011, Epsilon);
-    ASSERT_NEAR(bicuads.getB2(), 0.4128015980961886, Epsilon);
+    ASSERT_NEAR(bicuads.b1, -1.1429805025399011, Epsilon);
+    ASSERT_NEAR(bicuads.b2, 0.4128015980961886, Epsilon);
 
 }
 
@@ -242,16 +246,16 @@ TEST(DigitalFiltersTEST, TEST_LowShelf)
 {
     using namespace DigitalFilters;
 
-    BicuadCoefficients bicuads;
+    BiquadCoefficientsd bicuads;
 
-    bicuads = IIRFilters::LowShelf(5, 100,  1000);
+    bicuads = IIR::LowShelf(5.0, 100.0,  1000.0);
 
-    ASSERT_NEAR(bicuads.getA0(), 1.1504206767498881, Epsilon);
-    ASSERT_NEAR(bicuads.getA1(), -1.0379824010070995, Epsilon);
-    ASSERT_NEAR(bicuads.getA2(), 0.3673790228791024, Epsilon);
+    ASSERT_NEAR(bicuads.a0, 1.1504206767498881, Epsilon);
+    ASSERT_NEAR(bicuads.a1, -1.0379824010070995, Epsilon);
+    ASSERT_NEAR(bicuads.a2, 0.3673790228791024, Epsilon);
 
-    ASSERT_NEAR(bicuads.getB1(), -1.1429805025399011, Epsilon);
-    ASSERT_NEAR(bicuads.getB2(), 0.4128015980961886, Epsilon);
+    ASSERT_NEAR(bicuads.b1, -1.1429805025399011, Epsilon);
+    ASSERT_NEAR(bicuads.b2, 0.4128015980961886, Epsilon);
 
 }
 
@@ -259,17 +263,17 @@ TEST(DigitalFiltersTEST, TEST_LowShelfQ)
 {
     using namespace DigitalFilters;
 
-    BicuadCoefficients bicuads;
+    BiquadCoefficientsd bicuads;
 
-    bicuads = IIRFilters::LowShelfQ(5, 100, 1 / sqrt(2), 1000);
+    bicuads = IIR::LowShelfQ(5.0, 100.0, 1 / sqrt(2.0), 1000.0);
 
 
-    ASSERT_NEAR(bicuads.getA0(), 1.1504206767498881, Epsilon);
-    ASSERT_NEAR(bicuads.getA1(), -1.0379824010070995, Epsilon);
-    ASSERT_NEAR(bicuads.getA2(), 0.3673790228791024, Epsilon);
+    ASSERT_NEAR(bicuads.a0, 1.1504206767498881, Epsilon);
+    ASSERT_NEAR(bicuads.a1, -1.0379824010070995, Epsilon);
+    ASSERT_NEAR(bicuads.a2, 0.3673790228791024, Epsilon);
 
-    ASSERT_NEAR(bicuads.getB1(), -1.1429805025399011, Epsilon);
-    ASSERT_NEAR(bicuads.getB2(), 0.4128015980961886, Epsilon);
+    ASSERT_NEAR(bicuads.b1, -1.1429805025399011, Epsilon);
+    ASSERT_NEAR(bicuads.b2, 0.4128015980961886, Epsilon);
 
 }
 
@@ -277,17 +281,17 @@ TEST(DigitalFiltersTEST, TEST_Notch)
 {
     using namespace DigitalFilters;
 
-    BicuadCoefficients bicuads;
+    BiquadCoefficientsd bicuads;
 
-    bicuads = IIRFilters::Notch(100, 10, 1000);
+    bicuads = IIR::Notch(100.0, 10.0, 1000.0);
 
 
-    ASSERT_NEAR(bicuads.getA0(), 0.9714498065192796, Epsilon);
-    ASSERT_NEAR(bicuads.getA1(), -1.5718388053127037, Epsilon);
-    ASSERT_NEAR(bicuads.getA2(), 0.9714498065192796, Epsilon);
+    ASSERT_NEAR(bicuads.a0, 0.9714498065192796, Epsilon);
+    ASSERT_NEAR(bicuads.a1, -1.5718388053127037, Epsilon);
+    ASSERT_NEAR(bicuads.a2, 0.9714498065192796, Epsilon);
 
-    ASSERT_NEAR(bicuads.getB1(), -1.5718388053127037, Epsilon);
-    ASSERT_NEAR(bicuads.getB2(), 0.9428996130385592, Epsilon);
+    ASSERT_NEAR(bicuads.b1, -1.5718388053127037, Epsilon);
+    ASSERT_NEAR(bicuads.b2, 0.9428996130385592, Epsilon);
 
 }
 
@@ -295,20 +299,20 @@ TEST(DigitalFiltersTEST, TEST_OnePoleHighPass)
 {
     using namespace DigitalFilters;
 
-    BicuadCoefficients bicuads;
+    BiquadCoefficientsd bicuads;
 
-    bicuads = IIRFilters::OnePoleHighPass(100, 1000);
+    bicuads = IIR::OnePoleHighPass(100.0, 1000.0);
 
 
-    ASSERT_NEAR(bicuads.getA0(), 0.9189974078420569, Epsilon);
+    ASSERT_NEAR(bicuads.a0, 0.9189974078420569, Epsilon);
 
-    ASSERT_NEAR(bicuads.getA1(), 0, Epsilon);
+    ASSERT_NEAR(bicuads.a1, 0, Epsilon);
 
-    ASSERT_NEAR(bicuads.getA2(), 0, Epsilon);
+    ASSERT_NEAR(bicuads.a2, 0, Epsilon);
 
-    ASSERT_NEAR(bicuads.getB1(), 0.08100259215794314, Epsilon);
+    ASSERT_NEAR(bicuads.b1, 0.08100259215794314, Epsilon);
 
-    ASSERT_NEAR(bicuads.getB2(), 0, Epsilon);
+    ASSERT_NEAR(bicuads.b2, 0, Epsilon);
 
 }
 
@@ -317,19 +321,19 @@ TEST(DigitalFiltersTEST, Test_OnePoleLowPass)
 {
     using namespace DigitalFilters;
 
-    BicuadCoefficients bicuads;
+    BiquadCoefficientsd bicuads;
 
-    bicuads = IIRFilters::OnePoleLowPass(100, 1000);
+    bicuads = IIR::OnePoleLowPass(100.0, 1000.0);
 
-    ASSERT_NEAR(bicuads.getA0(), 0.4665119089088967, Epsilon);
+    ASSERT_NEAR(bicuads.a0, 0.4665119089088967, Epsilon);
 
-    ASSERT_NEAR(bicuads.getA1(), 0, Epsilon);
+    ASSERT_NEAR(bicuads.a1, 0, Epsilon);
 
-    ASSERT_NEAR(bicuads.getA2(), 0, Epsilon);
+    ASSERT_NEAR(bicuads.a2, 0, Epsilon);
 
-    ASSERT_NEAR(bicuads.getB1(), -0.5334880910911033, Epsilon);
+    ASSERT_NEAR(bicuads.b1, -0.5334880910911033, Epsilon);
 
-    ASSERT_NEAR(bicuads.getB2(), 0, Epsilon);
+    ASSERT_NEAR(bicuads.b2, 0, Epsilon);
 
 }
 
@@ -337,20 +341,20 @@ TEST(DigitalFiltersTEST, Test_PeakEq)
 {
     using namespace DigitalFilters;
 
-    BicuadCoefficients bicuads;
+    BiquadCoefficientsd bicuads;
 
-    bicuads = IIRFilters::PeakEq(5, 100, 10, 1000);
+    bicuads = IIR::PeakEq(5.0, 100.0, 10.0, 1000.0);
 
 
-    ASSERT_NEAR(bicuads.getA0(), 1.0222200277386724, Epsilon);
+    ASSERT_NEAR(bicuads.a0, 1.0222200277386724, Epsilon);
 
-    ASSERT_NEAR(bicuads.getA1(), -1.5718388053127037, Epsilon);
+    ASSERT_NEAR(bicuads.a1, -1.5718388053127037, Epsilon);
 
-    ASSERT_NEAR(bicuads.getA2(), 0.920679585299887, Epsilon);
+    ASSERT_NEAR(bicuads.a2, 0.920679585299887, Epsilon);
 
-    ASSERT_NEAR(bicuads.getB1(), -1.5718388053127037, Epsilon);
+    ASSERT_NEAR(bicuads.b1, -1.5718388053127037, Epsilon);
 
-    ASSERT_NEAR(bicuads.getB2(), 0.9428996130385592, Epsilon);
+    ASSERT_NEAR(bicuads.b2, 0.9428996130385592, Epsilon);
 
 }
 
@@ -381,12 +385,12 @@ TEST(DigitalFiltersTEST, Test_EvalBicuad)
 
     std::complex<long double> res;
 
-    w = FilterUtils<long double>::HzToW (110.0) / fs;
+    w = DigitalFilters::Utils::HzToOmega (110.0) / fs;
 
-    res = FilterEvaluator<long double>::EvalBicuad(
-      zeros[0], zeros[1], zeros[2], poles[1], poles[2], w);
+    res = Eval::CalcFreqResponse( Biquad(
+      zeros[0], zeros[1], zeros[2], poles[1], poles[2]), w);
 
-    magnitude_db = FilterUtils<long double>::GainTodB(abs(res));
+    magnitude_db = Utils::GainTodB(abs(res));
     phase = arg(res);
 
 
@@ -394,12 +398,12 @@ TEST(DigitalFiltersTEST, Test_EvalBicuad)
     ASSERT_NEAR(phase, -2.604320565152820e-01, Epsilon);
 
 
-    w = FilterUtils<long double>::HzToW (90.0) / fs;
+    w = Utils::HzToOmega (90.0) / fs;
 
-    res = FilterEvaluator<long double>::EvalBicuad(
-      zeros[0], zeros[1], zeros[2], poles[1], poles[2], w);
+    res = Eval::CalcFreqResponse( Biquad(
+      zeros[0], zeros[1], zeros[2], poles[1], poles[2]), w);
 
-    magnitude_db = FilterUtils<long double>::GainTodB(abs(res));
+    magnitude_db = Utils::GainTodB(abs(res));
     phase = arg(res);
 
 
@@ -408,32 +412,28 @@ TEST(DigitalFiltersTEST, Test_EvalBicuad)
     ASSERT_NEAR(phase, 2.509964622124102e-01, Epsilon);
 
 
-    w = FilterUtils<long double>::HzToW (100.0) / fs;
+    w = Utils::HzToOmega (100.0) / fs;
 
     res =
-      FilterEvaluator<long double>::EvalBicuad(
-      zeros[0], zeros[1], zeros[2], poles[1], poles[2], w);
+      Eval::CalcFreqResponse( Biquad(
+      zeros[0], zeros[1], zeros[2], poles[1], poles[2]), w);
 
-    magnitude_db = FilterUtils<long double>::GainTodB(abs(res));
+    magnitude_db = Utils::GainTodB(abs(res));
     phase = arg(res);
 
 
     ASSERT_NEAR(magnitude_db, 5, Epsilon);
 
 
-    BicuadCoefficients bicuads;
-
-    bicuads = IIRFilters::PeakEq(5, 100, 10, 1000);
+    auto bicuads = IIR::PeakEq(5.0l, 100.0l, 10.0l, 1000.0l);
 
 
-    w = FilterUtils<long double>::HzToW (100.0) / fs;
+    w = Utils::HzToOmega (100.0) / fs;
 
     res =
-      FilterEvaluator<long double>::EvalBicuad(
-      bicuads.getA0(), bicuads.getA1(), bicuads.getA2(),
-      bicuads.getB1(), bicuads.getB2(), w);
+      Eval::CalcFreqResponse( bicuads, w);
 
-    magnitude_db = FilterUtils<long double>::GainTodB(abs(res));
+    magnitude_db = Utils::GainTodB(abs(res));
     phase = arg(res);
 
 
@@ -466,28 +466,28 @@ TEST(DigitalFiltersTEST, Test_EvalBicuadTrig)
 
   long double w, magnitude_db, phase;
 
-  std::pair<long double, long double> res;
+  FrequencyResponse<long double> res;
 
-  w = FilterUtils<long double>::HzToW (110.0) / fs;
+  w = Utils::HzToOmega (110.0) / fs;
 
-  res = FilterEvaluator<long double>::EvalBicuadTrig(
-    zeros[0], zeros[1], zeros[2], poles[1], poles[2], w);
+  res = Eval::CalcFreqResponseTrig( Biquad(
+    zeros[0], zeros[1], zeros[2], poles[1], poles[2]), w);
 
-  magnitude_db = FilterUtils<long double>::GainTodB(res.first);
-  phase = res.second;
+  magnitude_db = 20L * log10( abs( res.magnitude ) );
+  phase = res.phase;
 
 
   ASSERT_NEAR(magnitude_db, 1.5041110035372895, Epsilon);
-  ASSERT_NEAR(phase, -2.604320565152820e-01, Epsilon);
+  ASSERT_NEAR(phase, -2.604320565152820e-01, Epsilon );
 
 
-  w = FilterUtils<long double>::HzToW (90.0) / fs;
+  w = Utils::HzToOmega (90.0) / fs;
 
-  res = FilterEvaluator<long double>::EvalBicuadTrig(
-    zeros[0], zeros[1], zeros[2], poles[1], poles[2], w);
+  res = Eval::CalcFreqResponseTrig( Biquad(
+    zeros[0], zeros[1], zeros[2], poles[1], poles[2]), w);
 
-  magnitude_db = FilterUtils<long double>::GainTodB(res.first);
-  phase = res.second;
+  magnitude_db = 20L * log10( abs( res.magnitude ) );
+  phase = res.phase;
 
 
   ASSERT_NEAR(magnitude_db, 1.3312607813937896, Epsilon);
@@ -495,32 +495,31 @@ TEST(DigitalFiltersTEST, Test_EvalBicuadTrig)
   ASSERT_NEAR(phase, 2.509964622124102e-01, Epsilon);
 
 
-  w = FilterUtils<long double>::HzToW (100.0) / fs;
+  w = Utils::HzToOmega (100.0) / fs;
 
   res =
-    FilterEvaluator<long double>::EvalBicuadTrig(
-    zeros[0], zeros[1], zeros[2], poles[1], poles[2], w);
+    Eval::CalcFreqResponseTrig( Biquad(
+    zeros[0], zeros[1], zeros[2], poles[1], poles[2]), w);
 
-  magnitude_db = FilterUtils<long double>::GainTodB(res.first);
-  phase = res.second;
+  magnitude_db = 20L * log10( abs( res.magnitude ) );
+  phase = res.phase;
 
   ASSERT_NEAR(magnitude_db, 5, Epsilon);
 
 
-  BicuadCoefficients bicuads;
 
-  bicuads = IIRFilters::PeakEq(5, 100, 10, 1000);
+  auto bicuads = IIR::PeakEq(5.0l, 100.0l, 10.0l, 1000.0l);
 
 
-  w = FilterUtils<long double>::HzToW (100.0) / fs;
+  w = Utils::HzToOmega (100.0) / fs;
 
   res =
-    FilterEvaluator<long double>::EvalBicuadTrig(
-    bicuads.getA0(), bicuads.getA1(), bicuads.getA2(),
-    bicuads.getB1(), bicuads.getB2(), w);
+    Eval::CalcFreqResponseTrig(Biquad(
+    bicuads.a0, bicuads.a1, bicuads.a2,
+    bicuads.b1, bicuads.b2), w);
 
-  magnitude_db = FilterUtils<long double>::GainTodB(res.first);
-  phase = res.second;
+  magnitude_db = 20L * log10( abs( res.magnitude ) );
+  phase = res.phase;
 
 
   ASSERT_NEAR(magnitude_db, 5, Epsilon);
@@ -536,14 +535,14 @@ TEST(DigitalFiltersTEST, Test_FrequencyResponseTrig)
     long double fc = 110.0;  // Example frequency
     long double fs = 1000.0;  // Example sample rate
 
-    long double zeros[3] =
+    const long double zeros[3] =
     {
         1.0222200277386724,
         -1.5718388053127037,
         0.920679585299887,
     };
 
-    long double poles[3] =
+    const long double poles[3] =
     {
         (1.0),
         -1.5718388053127037,
@@ -556,11 +555,19 @@ TEST(DigitalFiltersTEST, Test_FrequencyResponseTrig)
 
     long double magnitude_db, phase;
 
-    std::pair<long double, long double> res = FilterEvaluator<long double>
-        ::FrequencyResponseTrig(zeros, poles, 3, w);
+    auto res_trig = Eval::CalcFreqResponseTrig<long double>(zeros, poles, w);
 
-    magnitude_db = 20L * log10(abs(res.first));
-    phase = res.second;
+    auto magnitude_trig_db = 20L * log10(abs( res_trig.magnitude));
+    auto phase_trig = res_trig.phase;
+
+    std::span mySpan1( zeros );
+    std::span mySpan2( poles );
+
+    auto res = Eval::CalcFreqResponse<long double >( mySpan1, mySpan2, w );
+
+    magnitude_db = Utils::GainTodB( abs( res ) );
+    phase = arg( res );
+
 
 
     ASSERT_NEAR(magnitude_db, 1.5041110035372895, Epsilon);
@@ -569,15 +576,14 @@ TEST(DigitalFiltersTEST, Test_FrequencyResponseTrig)
 
     w =  2 * pi * 90 / fs;
 
-    res = FilterEvaluator<long double>
-        ::FrequencyResponseTrig(zeros, poles, 3, w);
+    res_trig = Eval::CalcFreqResponseTrig<long double >( mySpan1, mySpan2, w);
 
-    magnitude_db = 20L * log10(abs(res.first));
-    phase = res.second;
+    magnitude_trig_db = 20L * log10(abs( res_trig.magnitude ));
+    phase_trig = res_trig.phase;
 
-    ASSERT_NEAR(magnitude_db, 1.3312607813937896, Epsilon);
+    ASSERT_NEAR( magnitude_trig_db, 1.3312607813937896, Epsilon);
 
-    ASSERT_NEAR(phase, 2.509964622124102e-01, Epsilon);
+    ASSERT_NEAR( phase_trig, 2.509964622124102e-01, Epsilon);
 }
 
 
@@ -589,14 +595,14 @@ TEST(DigitalFiltersTEST, Test_FrequencyResponse)
     long double fc = 110.0;  // Example frequency
     long double fs = 1000.0;  // Example sample rate
 
-    long double zeros[3] =
+    const long double zeros[3] =
     {
         1.0222200277386724,
         -1.5718388053127037,
         0.920679585299887,
     };
 
-    long double poles[3] =
+    const long double poles[3] =
     {
         (1.0),
         -1.5718388053127037,
@@ -609,8 +615,10 @@ TEST(DigitalFiltersTEST, Test_FrequencyResponse)
 
     long double magnitude_db, phase;
 
-    std::complex<long double> res = FilterEvaluator<long double>
-                                ::FrequencyResponse(zeros, poles, 3, w);
+    std::span mySpan1{ zeros };
+    std::span mySpan2{ poles };
+
+    std::complex<long double> res = Eval::CalcFreqResponse<long double >( mySpan1, mySpan2, w);
 
     magnitude_db = 20L * log10(abs(res));
     phase = arg(res);
@@ -620,12 +628,11 @@ TEST(DigitalFiltersTEST, Test_FrequencyResponse)
 
     ASSERT_NEAR(phase, -2.604320565152820e-01, Epsilon);
 
-    w = FilterUtils<long double>::HzToW (90) / fs;
+    w = Utils::HzToOmega (90.0l) / fs;
 
-    res = FilterEvaluator<long double>
-        ::FrequencyResponse(zeros, poles, 3, w);
+    res = Eval::CalcFreqResponse<long double >(zeros, poles,  w);
 
-    magnitude_db = FilterUtils<long double>::GainTodB(abs(res));
+    magnitude_db = Utils::GainTodB(abs(res));
     phase = arg(res);
 
 
@@ -638,18 +645,18 @@ TEST(DigitalFiltersTEST, Test_FrequencyResponse)
 
 TEST(DigitalFiltersTEST, TEST_Parallel)
 {
-  BicuadCoefficients bicuads;
+  BiquadCoefficientsd bicuads;
 
-  bicuads = IIRFilters::PeakEq(5, 100, 10, 1000);
+  bicuads = IIR::PeakEq(5.0, 100.0, 10.0, 1000.0);
 
 
   auto start = std::chrono::high_resolution_clock::now();
 
 
-  auto res = IIRfreqResponse::FrequencyResponse(bicuads.GetZeros(),
-    bicuads.GetPoles(),
+  auto res = IIRfreqResponse::FrequencyResponse(bicuads.GetDenominatorCoefficients(),
+    bicuads.GetNumeratorCoefficients(),
     randomSet,
-    1000);
+    1000.0);
 
 
   auto end = std::chrono::high_resolution_clock::now();
@@ -660,7 +667,7 @@ TEST(DigitalFiltersTEST, TEST_Parallel)
 
 
   std::cout << "Exec Time: " << duration.count()/1000
-    << " miliseconds" << std::endl;
+    << " milliseconds" << std::endl;
 
   EXPECT_EQ(1, 1);
   EXPECT_TRUE(true);

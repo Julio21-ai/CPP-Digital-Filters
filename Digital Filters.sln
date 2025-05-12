@@ -11,9 +11,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sample-Test1", "Sample-Test
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{24267DA7-7E7F-47FE-BB44-2FC11697F169}"
-	ProjectSection(SolutionItems) = preProject
-		TextFile1.txt = TextFile1.txt
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,8 +50,8 @@ Global
 		{E55A5D1D-D967-450D-A125-092AFBD908BE}.Debug|x64.Build.0 = Debug|x64
 		{E55A5D1D-D967-450D-A125-092AFBD908BE}.Debug|x86.ActiveCfg = Debug|Win32
 		{E55A5D1D-D967-450D-A125-092AFBD908BE}.Debug|x86.Build.0 = Debug|Win32
-		{E55A5D1D-D967-450D-A125-092AFBD908BE}.Release Intel|x64.ActiveCfg = Release Intel|x64
-		{E55A5D1D-D967-450D-A125-092AFBD908BE}.Release Intel|x64.Build.0 = Release Intel|x64
+		{E55A5D1D-D967-450D-A125-092AFBD908BE}.Release Intel|x64.ActiveCfg = Release|x64
+		{E55A5D1D-D967-450D-A125-092AFBD908BE}.Release Intel|x64.Build.0 = Release|x64
 		{E55A5D1D-D967-450D-A125-092AFBD908BE}.Release Intel|x86.ActiveCfg = Release|Win32
 		{E55A5D1D-D967-450D-A125-092AFBD908BE}.Release Intel|x86.Build.0 = Release|Win32
 		{E55A5D1D-D967-450D-A125-092AFBD908BE}.Release|x64.ActiveCfg = Release|x64

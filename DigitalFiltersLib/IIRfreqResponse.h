@@ -1,7 +1,15 @@
 #pragma once
 #include <complex>
 #include <vector>
-#include "BicuadCoefficients.h"
+#include "..\include\Biquad.h"
+#include "..\include\FrequencyResponse.h"
+#include "DigitalFiltersModuleExport.h"
+
+
+using namespace DigitalFilters;
+using BiquadCoefficientsDouble = Biquad<double>;
+using FrequencyResponseDouble = FrequencyResponse<double>;
+
 namespace DigitalFilters
 {
 
@@ -10,7 +18,7 @@ class DIGITALFILTERS_MODULE_LIB IIRfreqResponse
 public:
 
 	static std::complex<double> EvalBicuad(
-		const BicuadCoefficients& coef,
+		const BiquadCoefficientsDouble& coef,
 		double freq, double fs);
 
 	static std::complex<double> EvalBicuad(
@@ -28,28 +36,25 @@ public:
 		const std::vector<double>& poles,
 		const std::vector<double>& freqs, double fs);
 
-	static std::pair<double, double> EvalBicuadTrig(
-		const BicuadCoefficients& coef,
+	static FrequencyResponseDouble EvalBicuadTrig(
+		const BiquadCoefficientsDouble& coef,
 		double freq, double fs);
 
-	static std::pair<double, double> EvalBicuadTrig(
+	static FrequencyResponseDouble EvalBicuadTrig(
 		double a0, double a1, double a2,
 		double b1, double b2,
 		double freq, double fs);
 
-	static std::pair< double, double>FrequencyResponseTrig(
+	static FrequencyResponseDouble FrequencyResponseTrig(
 		const std::vector<double>& zeros,
 		const std::vector<double>& poles,
 		double freq, double fs);
 
-	static std::vector < std::pair< double, double> >FrequencyResponseTrig(
+	static std::vector < FrequencyResponseDouble >FrequencyResponseTrig(
 		const std::vector<double>& zeros,
 		const std::vector<double>& poles,
 		const std::vector<double>& freqs, double fs);
 
-	static double GainTodB(double);
-
-	static double HzToW(double);
 
 };
 
